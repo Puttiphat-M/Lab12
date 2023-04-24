@@ -1,140 +1,66 @@
-"""binserachtest.py - unit test for binsearch.py"""
-
-import binsearch as bin
+import binsearch as bsearch
 import unittest
-
+import random
 
 class KnownValues(unittest.TestCase):
-    knownValues = ((1, 'I'),
-                   (2, 'II'),
-                   (3, 'III'),
-                   (4, 'IV'),
-                   (5, 'V'),
-                   (6, 'VI'),
-                   (7, 'VII'),
-                   (8, 'VIII'),
-                   (9, 'IX'),
-                   (10, 'X'),
-                   (50, 'L'),
-                   (100, 'C'),
-                   (500, 'D'),
-                   (1000, 'M'),
-                   (31, 'XXXI'),
-                   (148, 'CXLVIII'),
-                   (294, 'CCXCIV'),
-                   (312, 'CCCXII'),
-                   (421, 'CDXXI'),
-                   (528, 'DXXVIII'),
-                   (621, 'DCXXI'),
-                   (782, 'DCCLXXXII'),
-                   (870, 'DCCCLXX'),
-                   (941, 'CMXLI'),
-                   (1043, 'MXLIII'),
-                   (1110, 'MCX'),
-                   (1226, 'MCCXXVI'),
-                   (1301, 'MCCCI'),
-                   (1485, 'MCDLXXXV'),
-                   (1509, 'MDIX'),
-                   (1607, 'MDCVII'),
-                   (1754, 'MDCCLIV'),
-                   (1832, 'MDCCCXXXII'),
-                   (1993, 'MCMXCIII'),
-                   (2074, 'MMLXXIV'),
-                   (2152, 'MMCLII'),
-                   (2212, 'MMCCXII'),
-                   (2343, 'MMCCCXLIII'),
-                   (2499, 'MMCDXCIX'),
-                   (2574, 'MMDLXXIV'),
-                   (2646, 'MMDCXLVI'),
-                   (2723, 'MMDCCXXIII'),
-                   (2892, 'MMDCCCXCII'),
-                   (2975, 'MMCMLXXV'),
-                   (3051, 'MMMLI'),
-                   (3185, 'MMMCLXXXV'),
-                   (3250, 'MMMCCL'),
-                   (3313, 'MMMCCCXIII'),
-                   (3408, 'MMMCDVIII'),
-                   (3501, 'MMMDI'),
-                   (3610, 'MMMDCX'),
-                   (3743, 'MMMDCCXLIII'),
-                   (3844, 'MMMDCCCXLIV'),
-                   (3888, 'MMMDCCCLXXXVIII'),
-                   (3940, 'MMMCMXL'),
-                   (3999, 'MMMCMXCIX'))
+    knownValues = ( ( (10,20,30), 20), 1),
+    ( ( (10,20,30), 30), 2),
+    ( ( (10,20,30), 5), None),
+    ( ( (10,30,50,60,70), 50), 2),
+    ( ( (10,20,30,40,70,80), 80), 5),
+    ( ( (10,20,30,50,60,90), 30), 2),
+    ( ( (10,30,50,80,90), 30), 1),
+    ( ( (10,40,50,60,70,80,90,100), 100), 7),
+    ( ( (20,30,40,60,70), 20), 0),
+    ( ( (30,40,50,60), 5), None),
+    ( ( (10,20,30,30,30), 30), 2),
+    ( ( (10,20,30,30,30,30), 30), 2),
+    ( ( (20,20,20,20), 20), 1),
+    ( ( (20,20,20,20,20,20), 20), 2),
+    ( ( (10,20,30,40,50,50,60), 30), 2)
 
-    def testToRomanKnownValues(self):
-        """toRoman should give known result with known input"""
-        for integer, numeral in self.knownValues:
-            result = bin.toRoman(integer)
-            self.assertEqual(numeral, result)
-
-    def testFromRomanKnownValues(self):
-        """fromRoman should give known result with known input"""
-        for integer, numeral in self.knownValues:
-            result = bin.fromRoman(numeral)
-            self.assertEqual(integer, result)
-
-
-class ToRomanBadInput(unittest.TestCase):
-    def testTooLarge(self):
-        """toRoman should fail with large input"""
-        self.assertRaises(bin.OutOfRangeError, bin.toRoman, 4000)
-
-    def testZero(self):
-        """toRoman should fail with 0 input"""
-        self.assertRaises(bin.OutOfRangeError, bin.toRoman, 0)
-
-    def testNegative(self):
-        """toRoman should fail with negative input"""
-        self.assertRaises(bin.OutOfRangeError, bin.toRoman, -1)
-
-    def testNonInteger(self):
-        """toRoman should fail with non-integer input"""
-        self.assertRaises(bin.NotIntegerError, bin.toRoman, 0.5)
-
-
-class FromRomanBadInput(unittest.TestCase):
-    def testTooManyRepeatedNumerals(self):
-        """fromRoman should fail with too many repeated numerals"""
-        for s in ('MMMM', 'DD', 'CCCC', 'LL', 'XXXX', 'VV', 'IIII'):
-            self.assertRaises(bin.InvalidRomanNumeralError, bin.fromRoman, s)
-
-    def testRepeatedPairs(self):
-        """fromRoman should fail with repeated pairs of numerals"""
-        for s in ('CMCM', 'CDCD', 'XCXC', 'XLXL', 'IXIX', 'IVIV'):
-            self.assertRaises(bin.InvalidRomanNumeralError, bin.fromRoman, s)
-
-    def testMalformedAntecedent(self):
-        """fromRoman should fail with malformed antecedents"""
-        for s in ('IIMXCC', 'VX', 'DCM', 'CMM', 'IXIV',
-                  'MCMC', 'XCX', 'IVI', 'LM', 'LD', 'LC'):
-            self.assertRaises(bin.InvalidRomanNumeralError, bin.fromRoman, s)
-
+    def testBinKnownValue(self):
+        """binarysearch should give known result with known input"""
+        for v, idx in self.knownValues:
+            result = bsearch.binsearch(list(v[0]), v[1])
+            if idx is None:
+                self.assertEqual(idx, result)
+            else:
+                self.assertEqual(v[0][idx], v[0][result])
 
 class SanityCheck(unittest.TestCase):
-    def testSanity(self):
-        """fromRoman(toRoman(n))==n for all n"""
-        for integer in range(1, 4000):
-            numeral = bin.toRoman(integer)
-            result = bin.fromRoman(numeral)
-            self.assertEqual(integer, result)
+    def testIInNLength(self):
+        l = []
+        for i in range(10,11,1):
+            dataList = [j for j in range(i-10, i)]
+            idx = random.randint(0,9)
+            value = dataList[idx]
+            l.append(((dataList,dataList[idx]), idx))
+        i = bsearch.binsearch(dataList, value)
+        self.assertLessEqual(i, len(dataList))
+    def testvalueEqualKey(self):
+        l = []
+        for i in range(10,11,1):
+            dataList = [j for j in range(i-10, i)]
+            idx = random.randint(0,9)
+            value = dataList[idx]
+            l.append(((dataList,dataList[idx]), idx))
+            i = bsearch.binsearch(dataList, value)
+            self.assertEqual(value, dataList[idx])
+    def testreturnNone(self):
+        l = []
+        for i in range(10,11,1):
+            dataList = [j for j in range(i-10, i)]
+            idx = random.randint(0,9)
+            value = dataList[idx]
+            l.append(((dataList,dataList[idx]), idx))
+            i = bsearch.binsearch(dataList, value)
+            if i == "None":
+                self.assertGreater(i, len(dataList))
 
+class FailureCheck(unittest.TestCase):
+    def testFailure(self):
+        self.assertRaises(bsearch.InvalidArgument, bsearch.binsearch, "Ilovelolis", 2)
 
-class CaseCheck(unittest.TestCase):
-    def testToRomanCase(self):
-        """toRoman should always return uppercase"""
-        for integer in range(1, 4000):
-            numeral = bin.toRoman(integer)
-            self.assertEqual(numeral, numeral.upper())
-
-    def testFromRomanCase(self):
-        """fromRoman should only accept uppercase input"""
-        for integer in range(1, 4000):
-            numeral = bin.toRoman(integer)
-            bin.fromRoman(numeral.upper())
-            self.assertRaises(bin.InvalidRomanNumeralError,
-                              bin.fromRoman, numeral.lower())
-
-
-if __name__ == "__main__":
+if __name__=="__main__":
     unittest.main()
